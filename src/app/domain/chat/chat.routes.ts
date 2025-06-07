@@ -1,26 +1,16 @@
 import { Routes } from '@angular/router';
-import { TabsPage } from './tabs.page';
+import { ChatsPage } from './chats.page';
 
 export const routes: Routes = [
   {
-    path: 'tabs',
-    component: TabsPage,
+    path: 'chat',
+    component: ChatsPage,
     children: [
       {
         path: '1',
         loadComponent: () =>
-          import('../pages/chat.page').then((m) => m.ChatPage),
-      },
-      {
-        path: '',
-        redirectTo: '/tabs/tab1',
-        pathMatch: 'full',
+          import('./pages/chat/chat.page').then((m) => m.ChatPage),
       },
     ],
-  },
-  {
-    path: '',
-    redirectTo: '/tabs/tab1',
-    pathMatch: 'full',
   },
 ];

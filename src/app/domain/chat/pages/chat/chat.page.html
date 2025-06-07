@@ -1,0 +1,151 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/"></ion-back-button>
+    </ion-buttons>
+
+    <ion-title (click)="openGroupInfo()">
+      <div class="group-header">
+        <div class="group-name">{{ groupName }}</div>
+        <div class="group-status">{{ getOnlineMembersCount() }} membros online</div>
+      </div>
+    </ion-title>
+
+    <ion-buttons slot="end">
+      <ion-button fill="clear">
+        <!-- <ion-icon name="videocam-outline"></ion-icon> -->
+      </ion-button>
+      <ion-button fill="clear">
+        <!-- <ion-icon name="call-outline"></ion-icon> -->
+      </ion-button>
+      <ion-button fill="clear" (click)="openGroupInfo()">
+        <!-- <ion-icon name="information-circle-outline"></ion-icon> -->
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="chat-content">
+  <div class="messages-container">
+    <ng-container *ngFor="let message of messages; let i = index">
+      <!-- Separador de data -->
+      <div *ngIf="shouldShowDateSeparator(i)" class="date-separator">
+        <span>{{ formatDate(message.timestamp) }}</span>
+      </div>
+
+      <!-- Mensagem -->
+      <div class="message-wrapper" [class.own-message]="message.isOwn === this.loggedUser">
+        <div class="message-bubble" [class.own-bubble]="message.isOwn === this.loggedUser">
+          <!-- Avatar (apenas para mensagens de outros) -->
+          <!-- <div *ngIf="!message.isOwn" class="message-avatar">
+            <ion-avatar>
+              <img [src]="message.avatar" [alt]="message.senderName">
+            </ion-avatar>
+          </div> -->
+
+          <div class="message-content">
+            <!-- Nome do remetente (apenas para mensagens de outros) -->
+            <div *ngIf="message.isOwn !== this.loggedUser" class="sender-name">
+              {{ message.senderName }}
+            </div>
+
+            <!-- Conteúdo da mensagem -->
+            <div class="message-body">
+              <!-- Mensagem de texto -->
+              <div class="text-message">
+                {{ message.text }}
+              </div>
+
+              <!-- Mensagem com imagem -->
+              <!-- <div *ngIf="message.type === 'image'" class="image-message">
+                <div *ngIf="message.text" class="image-caption">
+                  {{ message.text }}
+                </div>
+              </div> -->
+            </div>
+
+            <!-- Informações da mensagem -->
+            <div class="message-info">
+              <span class="message-time">{{ formatTime(message.timestamp) }}</span>
+
+              <!-- Status da mensagem (apenas para mensagens próprias) -->
+              <div *ngIf="message.isSender" class="message-status">
+                <!-- <ion-icon
+                  *ngIf="message.status === 'sent'"
+                  name="checkmark-outline"
+                  class="status-sent">
+                </ion-icon>
+                <ion-icon
+                  *ngIf="message.status === 'delivered'"
+                  name="checkmark-done-outline"
+                  class="status-delivered">
+                </ion-icon>
+                <ion-icon
+                  *ngIf="message.status === 'read'"
+                  name="checkmark-done-outline"
+                  class="status-read">
+                </ion-icon> -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </ng-container>
+
+    <!-- Indicador de digitação -->
+    <div *ngIf="isTyping" class="typing-indicator">
+      <div class="typing-bubble">
+        <div class="typing-dots">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="message-input-container">
+      <!-- <ion-button
+        fill="clear"
+        size="small"
+        (click)="attachFile()"
+        class="attach-button">
+        <ion-icon name="attach-outline"></ion-icon>
+      </ion-button> -->
+
+      <div class="input-wrapper">
+        <ion-textarea
+          #messageInput
+          [(ngModel)]="newMessage"
+          placeholder="Digite uma mensagem..."
+          rows="1"
+          autoGrow="true"
+          maxlength="1000"
+          (ionFocus)="onInputFocus()"
+          (keydown.enter)="sendMessage(); $event.preventDefault()">
+        </ion-textarea>
+      </div>
+
+      <!-- <ion-button
+        *ngIf="!newMessage.trim()"
+        fill="clear"
+        size="medium"
+        (click)="openCamera()"
+        class="camera-button">
+        <ion-icon name="camera-outline"></ion-icon>
+      </ion-button> -->
+
+      <ion-button
+        *ngIf="newMessage.trim()"
+        fill="clear"
+        (click)="sendMessage()"
+        class="send-button">
+        <!-- <ion-icon name="send-sharp"></ion-icon> -->
+        <img class="send-button-svg" src="/assets/icon/send-sharp.svg" alt="Enviar mensagem">
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>
