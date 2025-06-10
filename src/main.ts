@@ -9,6 +9,8 @@ import { provideDatabase, getDatabase } from '@angular/fire/database';
 import { routes } from './app/app.routes';
 import { AppComponent } from './app/app.component';
 import { environment } from './environments/environment';
+import { IonicStorageModule } from '@ionic/storage-angular';
+import { importProvidersFrom } from '@angular/core';
 
 bootstrapApplication(AppComponent, {
   providers: [
@@ -18,6 +20,7 @@ bootstrapApplication(AppComponent, {
     provideRouter(routes, withPreloading(PreloadAllModules)),
     provideFirebaseApp(() => initializeApp(environment.firebase)),
     provideDatabase(() => getDatabase()),
+    importProvidersFrom(IonicStorageModule.forRoot({})),
   ],
 });
 

@@ -7,10 +7,15 @@ export const routes: Routes = [
     component: ChatsPage,
     children: [
       {
-        path: '1',
+        path: '**',
         loadComponent: () =>
           import('./pages/chat/chat.page').then((m) => m.ChatPage),
       },
     ],
+  },
+  {
+    path: '',
+    redirectTo: '/chat/',
+    pathMatch: 'full',
   },
 ];

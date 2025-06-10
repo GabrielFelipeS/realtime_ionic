@@ -1,15 +1,15 @@
 import { CommonModule } from "@angular/common"
-import { Component, ViewChild, type ElementRef, type AfterViewInit, inject, OnInit } from "@angular/core"
+import { Component, ViewChild, type ElementRef, type AfterViewInit, Signal } from "@angular/core"
 import { FormsModule } from "@angular/forms"
-import { IonContent } from "@ionic/angular"
+import { IonContent, ScrollDetail } from "@ionic/angular"
 import { IonicModule } from "@ionic/angular"
-import { Database, ref, child, onValue, push } from '@angular/fire/database';
 import {IGroupMember} from '../../interfaces/igroup-member.interface';
 import {IMessage} from '../../interfaces/imessage.interface';
-import { AuthService } from "src/app/core/services/auth/auth.service"
 import { DateUtils } from "src/app/widget/utils/date.utils"
 import { MessageService } from "../../services/message/message.service"
-
+import { AuthService } from "src/app/core/services/auth/auth.service"
+import { StorageService } from "src/app/core/services/storage/storage.service"
+import { Observable } from "rxjs"
 
 @Component({
   selector: 'app-chat',
@@ -21,7 +21,7 @@ export class ChatPage implements  AfterViewInit{
   @ViewChild(IonContent, { static: false }) content!: IonContent
   @ViewChild("messageInput", { static: false }) messageInput!: ElementRef
 
-  groupName = "Equipe de Desenvolvimento"
+  groupName = "Ionic é melhor que React"
 
   groupMembers: IGroupMember[] = [
     { id: "1", name: "João Silva", avatar: "/placeholder.svg?height=40&width=40", isOnline: true },
@@ -33,15 +33,21 @@ export class ChatPage implements  AfterViewInit{
   messages: IMessage[] = []
 
   newMessage = ""
+  newUser = ""
   isTyping = false
   usuarios: any;
-  loggedUser!: string;
+  loggedUser!: Signal<string>;
+  hasKey: Observable<boolean>
 
-  constructor(private messageService: MessageService) {
+  constructor(private storageService: StorageService, private messageService: MessageService) {
     this.messageService.messages$.subscribe(messages => {
       this.messages = messages
+       this.onScroll()
     })
-    // this.loggedUser = this.authService.loggedUser()
+
+    this.loggedUser = this.storageService.getKey;
+
+    this.hasKey = this.storageService.getHasKey$();
   }
 
   ngAfterViewInit() {
@@ -49,12 +55,18 @@ export class ChatPage implements  AfterViewInit{
   }
 
   sendMessage() {
+
     if (this.newMessage.trim()) {
       this.messageService.sendMessage(this.newMessage)
         .then( () => this.newMessage = "")
 
       this.scrollToBottom()
     }
+  }
+
+  async createUser() {
+    await this.storageService.createUser(this.newUser)
+    this.newUser = ''
   }
 
   onInputFocus() {
@@ -67,6 +79,23 @@ export class ChatPage implements  AfterViewInit{
     setTimeout(() => {
       this.content.scrollToBottom(300)
     }, 100)
+  }
+
+  async onScroll() {
+    if(!this.content) return
+
+    const distanciaDoFim = 200;
+    const scrollElement = await this.content.getScrollElement();
+
+    const scrollTop = scrollElement.scrollTop;
+    const scrollHeight = scrollElement.scrollHeight;
+    const clientHeight = scrollElement.clientHeight;
+
+    const scrollToBottom = (scrollTop + clientHeight) >= (scrollHeight - distanciaDoFim);
+
+    if (scrollToBottom) {
+      this.content.scrollToBottom(300);
+    }
   }
 
   formatTime(timestamp: number): string {

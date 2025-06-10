@@ -34,34 +34,25 @@
       </div>
 
       <!-- Mensagem -->
-      <div class="message-wrapper" [class.own-message]="message.isOwn === this.loggedUser">
-        <div class="message-bubble" [class.own-bubble]="message.isOwn === this.loggedUser">
-          <!-- Avatar (apenas para mensagens de outros) -->
-          <!-- <div *ngIf="!message.isOwn" class="message-avatar">
-            <ion-avatar>
-              <img [src]="message.avatar" [alt]="message.senderName">
-            </ion-avatar>
-          </div> -->
+      <div class="message-wrapper" [class.own-message]="message.isOwn === this.loggedUser()">
+        <div class="message-bubble" [class.own-bubble]="message.isOwn === this.loggedUser()">
+
 
           <div class="message-content">
-            <!-- Nome do remetente (apenas para mensagens de outros) -->
-            <div *ngIf="message.isOwn !== this.loggedUser" class="sender-name">
+
+            <div *ngIf="message.isOwn !== this.loggedUser()" class="sender-name">
               {{ message.senderName }}
             </div>
 
-            <!-- Conteúdo da mensagem -->
+
             <div class="message-body">
-              <!-- Mensagem de texto -->
+
+
               <div class="text-message">
                 {{ message.text }}
               </div>
 
-              <!-- Mensagem com imagem -->
-              <!-- <div *ngIf="message.type === 'image'" class="image-message">
-                <div *ngIf="message.text" class="image-caption">
-                  {{ message.text }}
-                </div>
-              </div> -->
+
             </div>
 
             <!-- Informações da mensagem -->
@@ -108,17 +99,8 @@
 <ion-footer>
   <ion-toolbar>
     <div class="message-input-container">
-      <!-- <ion-button
-        fill="clear"
-        size="small"
-        (click)="attachFile()"
-        class="attach-button">
-        <ion-icon name="attach-outline"></ion-icon>
-      </ion-button> -->
-
-      <div class="input-wrapper">
-        <ion-textarea
-          #messageInput
+      <div #messageInput class="input-wrapper">
+        <ion-textarea  *ngIf="(hasKey | async); else elseBlock"
           [(ngModel)]="newMessage"
           placeholder="Digite uma mensagem..."
           rows="1"
@@ -127,19 +109,22 @@
           (ionFocus)="onInputFocus()"
           (keydown.enter)="sendMessage(); $event.preventDefault()">
         </ion-textarea>
+
+        <ng-template #elseBlock>
+          <ion-textarea
+            [(ngModel)]="newUser"
+            placeholder="Digite o seu nome..."
+            rows="1"
+            autoGrow="true"
+            maxlength="1000"
+            (ionFocus)="onInputFocus()"
+            (keydown.enter)="createUser(); $event.preventDefault()">
+          </ion-textarea>
+        </ng-template>
       </div>
 
-      <!-- <ion-button
-        *ngIf="!newMessage.trim()"
-        fill="clear"
-        size="medium"
-        (click)="openCamera()"
-        class="camera-button">
-        <ion-icon name="camera-outline"></ion-icon>
-      </ion-button> -->
-
       <ion-button
-        *ngIf="newMessage.trim()"
+        *ngIf="newMessage.trim() || newUser.trim()"
         fill="clear"
         (click)="sendMessage()"
         class="send-button">

@@ -1,14 +1,14 @@
 import { Injectable, signal } from '@angular/core';
+import { StorageService } from '../storage/storage.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   private loggedUserSignal = signal('-ORYWmMOaBoN7Y_0dNBY')
-  // private loggedUserSignal = signal('-ORYSg0txn4MI-OPi4Yh')
   private loggedNameUserSignal = signal('Carlos')
 
-  constructor() { }
+  constructor(storageService: StorageService) { }
 
   get loggedUser() {
     return this.loggedUserSignal.asReadonly()

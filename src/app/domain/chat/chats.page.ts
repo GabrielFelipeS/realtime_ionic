@@ -8,11 +8,6 @@ import { ellipse, triangle } from 'ionicons/icons';
   template: `
   <ion-tabs>
     <ion-tab-bar slot="bottom">
-      <ion-tab-button tab="tab1" href="/tabs/tab1">
-        <ion-icon aria-hidden="true" name="triangle"></ion-icon>
-        <ion-label>Grupos</ion-label>
-      </ion-tab-button>
-
       <ion-tab-button tab="tab2" href="/chat/1">
         <ion-icon aria-hidden="true" name="ellipse"></ion-icon>
         <ion-label>Último grupo aberto</ion-label>

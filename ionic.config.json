@@ -1,5 +1,5 @@
 {
   "name": "realtime-ionic",
   "integrations": {},
-  "type": "angular-standalone"
+  "type": "angular"
 }
