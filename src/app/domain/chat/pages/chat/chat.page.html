@@ -10,18 +10,6 @@
         <div class="group-status">{{ getOnlineMembersCount() }} membros online</div>
       </div>
     </ion-title>
-
-    <ion-buttons slot="end">
-      <ion-button fill="clear">
-        <!-- <ion-icon name="videocam-outline"></ion-icon> -->
-      </ion-button>
-      <ion-button fill="clear">
-        <!-- <ion-icon name="call-outline"></ion-icon> -->
-      </ion-button>
-      <ion-button fill="clear" (click)="openGroupInfo()">
-        <!-- <ion-icon name="information-circle-outline"></ion-icon> -->
-      </ion-button>
-    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
@@ -58,25 +46,6 @@
             <!-- Informações da mensagem -->
             <div class="message-info">
               <span class="message-time">{{ formatTime(message.timestamp) }}</span>
-
-              <!-- Status da mensagem (apenas para mensagens próprias) -->
-              <div *ngIf="message.isSender" class="message-status">
-                <!-- <ion-icon
-                  *ngIf="message.status === 'sent'"
-                  name="checkmark-outline"
-                  class="status-sent">
-                </ion-icon>
-                <ion-icon
-                  *ngIf="message.status === 'delivered'"
-                  name="checkmark-done-outline"
-                  class="status-delivered">
-                </ion-icon>
-                <ion-icon
-                  *ngIf="message.status === 'read'"
-                  name="checkmark-done-outline"
-                  class="status-read">
-                </ion-icon> -->
-              </div>
             </div>
           </div>
         </div>
@@ -128,7 +97,6 @@
         fill="clear"
         (click)="sendMessage()"
         class="send-button">
-        <!-- <ion-icon name="send-sharp"></ion-icon> -->
         <img class="send-button-svg" src="/assets/icon/send-sharp.svg" alt="Enviar mensagem">
       </ion-button>
     </div>

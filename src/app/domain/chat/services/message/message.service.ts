@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { IMessage } from '../../interfaces/imessage.interface';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, from, of } from 'rxjs';
 import { Database, ref, child, onChildAdded, push } from '@angular/fire/database';
-import { AuthService } from 'src/app/core/services/auth/auth.service';
 import { StorageService } from 'src/app/core/services/storage/storage.service';
+import { HttpClient } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -13,21 +13,19 @@ export class MessageService {
   private messagesSubject = new BehaviorSubject<IMessage[]>([]);
   messages$ = this.messagesSubject.asObservable()
 
-  constructor(private db: Database, private storageService: StorageService) {
+  constructor(private db: Database, private storageService: StorageService, private http: HttpClient) {
     const mensagensRef = ref(this.db, 'messages');
 
     onChildAdded(mensagensRef, (snapshot) => {
+      console.log("NOVA MENSAGEM")
       const msg = snapshot.val() as IMessage;
       this.messages.push({...msg, isSender: msg.isOwn === this.storageService.getName()});
       this.messagesSubject.next([...this.messages]);
-      console.log("NOVA MENSAGEM")
     });
    }
 
   sendMessage(newMessage: string) {
-    if (!newMessage.trim()) return Promise.reject()
-
-    console.log(this.storageService.getName())
+    if (!newMessage.trim()) return of()
 
     const message: IMessage = {
       id: Date.now().toString(),
@@ -38,9 +36,11 @@ export class MessageService {
       isOwn: this.storageService.getKey(),
     }
 
+    // this.http.post('http://localhost:8080/messages', message)
+
     const mensagensRef = ref(this.db, 'messages');
 
-    return push(mensagensRef, message)
+    return from(push(mensagensRef, message))
   }
 
   get messagesObservable() {

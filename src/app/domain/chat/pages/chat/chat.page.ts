@@ -55,10 +55,12 @@ export class ChatPage implements  AfterViewInit{
   }
 
   sendMessage() {
-
+    console.log("TESTE")
     if (this.newMessage.trim()) {
-      this.messageService.sendMessage(this.newMessage)
-        .then( () => this.newMessage = "")
+
+      this.messageService.sendMessage(this.newMessage).subscribe({
+        complete: () => this.newMessage = ""
+      })
 
       this.scrollToBottom()
     }
